@@ -15,7 +15,8 @@ public class NotifyService implements JavaDelegate {
         if (status != null) {
             log.info("isApproved by manager: {}", status);
         } else {
-            log.warn("No 'isApproved' variable found in execution context.");
+            log.warn("Your leave request is auto-approved since it is only {} " ,execution.getVariable("days") +
+                    " day(s) long");
         }
     }
 }

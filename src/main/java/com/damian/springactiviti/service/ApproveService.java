@@ -14,7 +14,7 @@ public class ApproveService implements JavaDelegate {
         log.info("Executing ApproveService for process instance: {}", execution.getProcessInstanceId());
         var days = (Integer) execution.getVariable("days");
         if (days != null) {
-            log.info("Days requested for leave: {}", days);
+            log.info("Leave approved for : {} {}", days, " days");
         } else {
             log.warn("No 'days' variable found in execution context.");
         }
