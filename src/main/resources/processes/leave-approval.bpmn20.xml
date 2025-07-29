@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://flowable.org/bpmn">
+
+    <process id="leave-approval" name="Leave Approval Process" isExecutable="true">
+
+        <startEvent id="startEvent" name="Start"/>
+        <sequenceFlow id="flow1" sourceRef="startEvent" targetRef="checkDuration"/>
+
+        <exclusiveGateway id="checkDuration" name="Leave Duration?"/>
+
+        <sequenceFlow id="toAutoApprove" sourceRef="checkDuration" targetRef="autoApprove">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${days <= 3}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="toManagerApproval" sourceRef="checkDuration" targetRef="managerApproval">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${days > 3}]]></conditionExpression>
+        </sequenceFlow>
+
+        <serviceTask id="autoApprove" name="Auto Approve"
+                     flowable:class="com.damian.springactiviti.service.ApproveService"/>
+        <sequenceFlow id="flow4" sourceRef="autoApprove" targetRef="notifyEmployee"/>
+
+        <userTask id="managerApproval" name="Manager Approval" flowable:assignee="manager"/>
+        <sequenceFlow id="flow5" sourceRef="managerApproval" targetRef="notifyEmployee"/>
+
+        <serviceTask id="notifyEmployee" name="Notify Employee"
+                     flowable:class="com.damian.springactiviti.service.NotifyService"/>
+        <sequenceFlow id="flow6" sourceRef="notifyEmployee" targetRef="endEvent"/>
+
+        <endEvent id="endEvent" name="End"/>
+
+    </process>
+</definitions>
